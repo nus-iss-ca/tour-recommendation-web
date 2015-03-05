@@ -88,6 +88,7 @@ header {
 header .container {
     padding-top: 100px;
     padding-bottom: 50px;
+    margin-bottom: 20px;
 }
 
 header img {
@@ -143,6 +144,11 @@ header .intro-text .skills {
 
     .navbar-fixed-top.navbar-shrink .navbar-brand {
         font-size: 1.5em;
+    }
+
+    .portfolio-link img {
+        height: 330px;
+        min-width: 555px;
     }
 }
 

@@ -1,4 +1,9 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="x" uri="http://java.sun.com/jstl/xml" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jstl/sql" %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,7 +46,7 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#page-top">Tour recommendation</a>
+				<a class="navbar-brand" href="/">Tour recommendation</a>
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
@@ -60,87 +65,51 @@
 	</nav>
 
 	<!-- Header -->
-	<header>
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<img class="img-responsive" src="img/profile.png" alt="">
-					<div class="intro-text">
-						<span class="name">Tour Recommendation</span>
-						<hr class="star-light">
-						<span class="skills">Recommend - Touring - Attractions</span>
+	<c:if test="${empty locations}">
+		<header>
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<img class="img-responsive" src="img/profile.png" alt="">
+						<div class="intro-text">
+							<span class="name">Tour Recommendation</span>
+							<hr class="star-light">
+							<span class="skills">Recommend - Touring - Attractions</span>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</header>
-
+		</header>
+	</c:if>
 	<!-- Portfolio Grid Section -->
-	<section id="portfolio">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12 text-center">
-					<h2>Our attraction</h2>
-					<hr class="star-primary">
+	<c:if test="${not empty locations}">
+		<section id="portfolio">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 text-center">
+						<h2>Our attraction</h2>
+						<hr class="star-primary">
+					</div>
+				</div>
+				<div class="row">
+					<c:forEach items="${locations}" var="location">
+						<div class="col-md-6 portfolio-item">
+							<a href="#portfolioModal<c:out value="${location.id}" />" class="portfolio-link" data-toggle="modal">
+								<div class="caption">
+									<div class="caption-content">
+										<i class="fa fa-search-plus fa-3x"></i>
+									</div>
+								</div> <img src="<c:out value="${location.imageLocation}" />" class="img-responsive img-centered" alt="">
+							</a>
+							<h3>
+								<c:out value="${location.name}" />
+							<h3>
+						</div>
+					</c:forEach>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-6 portfolio-item">
-					<a href="#portfolioModal1" class="portfolio-link"
-						data-toggle="modal">
-						<div class="caption">
-							<div class="caption-content">
-								<i class="fa fa-search-plus fa-3x"></i>
-							</div>
-						</div> <img src="img/portfolio/cabin.png" class="img-responsive" alt="">
-					</a>
-					<h3>
-						Project One
-						<h3>
-				</div>
-				<div class="col-md-6 portfolio-item">
-					<a href="#portfolioModal2" class="portfolio-link"
-						data-toggle="modal">
-						<div class="caption">
-							<div class="caption-content">
-								<i class="fa fa-search-plus fa-3x"></i>
-							</div>
-						</div> <img src="img/portfolio/cake.png" class="img-responsive" alt="">
-					</a>
-					<h3>
-						Project One
-						<h3>
-				</div>
-				<div class="col-md-6 portfolio-item">
-					<a href="#portfolioModal3" class="portfolio-link"
-						data-toggle="modal">
-						<div class="caption">
-							<div class="caption-content">
-								<i class="fa fa-search-plus fa-3x"></i>
-							</div>
-						</div> <img src="img/portfolio/circus.png" class="img-responsive" alt="">
-					</a>
-					<h3>
-						Project One
-						<h3>
-				</div>
-				<div class="col-md-6 portfolio-item">
-					<a href="#portfolioModal4" class="portfolio-link"
-						data-toggle="modal">
-						<div class="caption">
-							<div class="caption-content">
-								<i class="fa fa-search-plus fa-3x"></i>
-							</div>
-						</div> <img src="img/portfolio/game.png" class="img-responsive" alt="">
-					</a>
-					<h3>
-						Project One
-						<h3>
-				</div>
-			</div>
-		</div>
-	</section>
-
+		</section>
+	</c:if>
 	<!-- Contact Section -->
 	<section id="contact">
 		<div class="container">
@@ -440,7 +409,6 @@
 								class="form-group col-xs-6 floating-label-form-group controls">
 								<label>Day/Night</label> <select name="day_night"
 									class="form-control">
-									<option value="">Day/Night</option>
 									<option value="day">Day</option>
 									<option value="night">Night</option>
 								</select>
@@ -578,182 +546,48 @@
 	</div>
 
 	<!-- Portfolio Modals -->
-	<div class="portfolio-modal modal fade" id="portfolioModal1"
-		tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-content">
-			<div class="close-modal" data-dismiss="modal">
-				<div class="lr">
-					<div class="rl"></div>
+	<c:forEach items="${locations}" var="location">
+		<div class="portfolio-modal modal fade" id="portfolioModal<c:out value="${location.id}" />"
+			tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-content">
+				<div class="close-modal" data-dismiss="modal">
+					<div class="lr">
+						<div class="rl"></div>
+					</div>
 				</div>
-			</div>
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-8 col-lg-offset-2">
-						<div class="modal-body">
-							<h2>Project Title</h2>
-							<hr class="star-primary">
-							<img src="img/portfolio/cabin.png"
-								class="img-responsive img-centered" alt="">
-							<p>
-								Use this area of the page to describe your project. The icon
-								above is part of a free icon set by <a
-									href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On
-								their website, you can download their free set with 16 icons, or
-								you can purchase the entire set with 146 icons for only $12!
-							</p>
-							<ul class="list-inline item-details">
-								<li>Client: <strong><a
-										href="http://startbootstrap.com">Start Bootstrap</a> </strong>
-								</li>
-								<li>Date: <strong><a
-										href="http://startbootstrap.com">April 2014</a> </strong>
-								</li>
-								<li>Service: <strong><a
-										href="http://startbootstrap.com">Web Development</a> </strong>
-								</li>
-							</ul>
-							<button type="button" class="btn btn-default"
-								data-dismiss="modal">
-								<i class="fa fa-times"></i> Close
-							</button>
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-8 col-lg-offset-2">
+							<div class="modal-body">
+								<h2><c:out value="${location.name}" /></h2>
+								<hr class="star-primary">
+								<img src="<c:out value="${location.imageLocation}" />"
+									class="img-responsive img-centered" alt="">
+								<p>
+									<c:out value="${location.desc}" />
+								</p>
+								<ul class="list-inline item-details">
+									<li>Website: <strong><a
+											href="<c:out value="${location.url}" />"><c:out value="${location.name}" /></a> </strong>
+									</li>
+									<li>Operation hours: <strong><a
+											href="#"><c:out value="${location.operatingHours}" /></a> </strong>
+									</li>
+									<li>Service: <strong><a
+											href="#">Singapore</a> </strong>
+									</li>
+								</ul>
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">
+									<i class="fa fa-times"></i> Close
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="portfolio-modal modal fade" id="portfolioModal2"
-		tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-content">
-			<div class="close-modal" data-dismiss="modal">
-				<div class="lr">
-					<div class="rl"></div>
-				</div>
-			</div>
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-8 col-lg-offset-2">
-						<div class="modal-body">
-							<h2>Project Title</h2>
-							<hr class="star-primary">
-							<img src="img/portfolio/cake.png"
-								class="img-responsive img-centered" alt="">
-							<p>
-								Use this area of the page to describe your project. The icon
-								above is part of a free icon set by <a
-									href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On
-								their website, you can download their free set with 16 icons, or
-								you can purchase the entire set with 146 icons for only $12!
-							</p>
-							<ul class="list-inline item-details">
-								<li>Client: <strong><a
-										href="http://startbootstrap.com">Start Bootstrap</a> </strong>
-								</li>
-								<li>Date: <strong><a
-										href="http://startbootstrap.com">April 2014</a> </strong>
-								</li>
-								<li>Service: <strong><a
-										href="http://startbootstrap.com">Web Development</a> </strong>
-								</li>
-							</ul>
-							<button type="button" class="btn btn-default"
-								data-dismiss="modal">
-								<i class="fa fa-times"></i> Close
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="portfolio-modal modal fade" id="portfolioModal3"
-		tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-content">
-			<div class="close-modal" data-dismiss="modal">
-				<div class="lr">
-					<div class="rl"></div>
-				</div>
-			</div>
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-8 col-lg-offset-2">
-						<div class="modal-body">
-							<h2>Project Title</h2>
-							<hr class="star-primary">
-							<img src="img/portfolio/circus.png"
-								class="img-responsive img-centered" alt="">
-							<p>
-								Use this area of the page to describe your project. The icon
-								above is part of a free icon set by <a
-									href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On
-								their website, you can download their free set with 16 icons, or
-								you can purchase the entire set with 146 icons for only $12!
-							</p>
-							<ul class="list-inline item-details">
-								<li>Client: <strong><a
-										href="http://startbootstrap.com">Start Bootstrap</a> </strong>
-								</li>
-								<li>Date: <strong><a
-										href="http://startbootstrap.com">April 2014</a> </strong>
-								</li>
-								<li>Service: <strong><a
-										href="http://startbootstrap.com">Web Development</a> </strong>
-								</li>
-							</ul>
-							<button type="button" class="btn btn-default"
-								data-dismiss="modal">
-								<i class="fa fa-times"></i> Close
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="portfolio-modal modal fade" id="portfolioModal4"
-		tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-content">
-			<div class="close-modal" data-dismiss="modal">
-				<div class="lr">
-					<div class="rl"></div>
-				</div>
-			</div>
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-8 col-lg-offset-2">
-						<div class="modal-body">
-							<h2>Project Title</h2>
-							<hr class="star-primary">
-							<img src="img/portfolio/game.png"
-								class="img-responsive img-centered" alt="">
-							<p>
-								Use this area of the page to describe your project. The icon
-								above is part of a free icon set by <a
-									href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On
-								their website, you can download their free set with 16 icons, or
-								you can purchase the entire set with 146 icons for only $12!
-							</p>
-							<ul class="list-inline item-details">
-								<li>Client: <strong><a
-										href="http://startbootstrap.com">Start Bootstrap</a> </strong>
-								</li>
-								<li>Date: <strong><a
-										href="http://startbootstrap.com">April 2014</a> </strong>
-								</li>
-								<li>Service: <strong><a
-										href="http://startbootstrap.com">Web Development</a> </strong>
-								</li>
-							</ul>
-							<button type="button" class="btn btn-default"
-								data-dismiss="modal">
-								<i class="fa fa-times"></i> Close
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	</c:forEach>
 
 	<!-- jQuery -->
 	<script src="js/jquery.js"></script>

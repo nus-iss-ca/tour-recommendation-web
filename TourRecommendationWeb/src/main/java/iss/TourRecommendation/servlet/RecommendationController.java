@@ -110,12 +110,7 @@ public class RecommendationController extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// Example to add
-		String json = null;
-		json = new Gson().toJson(locations2Visit);
-		response.setContentType("application/json");
-		response.getWriter().write(json);
+		
 		request.setAttribute("locations", locations2Visit);
 		request.getRequestDispatcher("index.jsp").forward(request, response);
 		
