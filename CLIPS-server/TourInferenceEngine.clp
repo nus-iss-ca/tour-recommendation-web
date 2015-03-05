@@ -5,9 +5,7 @@
 ;; 			this is in clips UI form, thus there are questions. for the JAVA ui, there shouldnt be a need for questions in the clips code.
 ;;	note: actually day/night tag can be included in the tag multislot field, but since it was originally coded like that, i left it alone.
 
-;to Hamsa: you can just press a random key and press enter to skip the field, cos the bind response will not accept RETURN without a prior value.
-
-;3th last rule: check for error
+;3rd last rule: check for error
 ;2nd last rule: grabs all the cur_goal in the system and sorts them in order of CF, then by rank.
 ;last rule: prints out whatever is sorted in the last rule.
 
@@ -104,12 +102,11 @@
 
 (defrule date_input
 	(date ?occasion)
-	(cur_fact (fact ?place) (cf ?cf-grab) (tag $? ?occasion $?))
+	?f1 <- (cur_fact (fact ?place) (cf ?cf-grab) (tag $?a ?occasion $?b))
 =>	(printout t "A Festive Date is selected" crlf)
-	(assert (work_goal (goal ?place) (cf (* ?cf-grab 0.7)) (tag occasion)))
+	(modify ?f1 (fact ?place) (cf ?cf-grab) (tag $?a $?b culture landmarks)
+	(assert (work_goal (goal ?place) (cf (* ?cf-grab 0.8)) (tag occasion)))
 )
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; BUSINESS RULES (1) TIME
@@ -208,7 +205,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;a numeric input is needed or defrule budget_impossible will crash doing numeric comparison.
 ;(defrule budget_input 
-;=>	(printout t crlf "How much are you willing to spend per pax? [3//2//1] (3 being highest [a +ve numeric answer is required, garbage will cause program crash]" crlf) 
+;=>	(printout t crlf "How much are you willing to spend per pax? [3//2//1//0] (3 being highest [a +ve numeric answer is required, garbage will cause program crash]" crlf) 
 ;	(bind ?response (read))
 ;	(printout t crlf)
 ;	(assert (budget ?response))
@@ -222,30 +219,33 @@
 =>	(switch ?amount
 		(case 3 then
 			(if (eq ?howmuch 3) then
-			(assert (work_goal (goal ?place)(cf (* ?cf-grab 0.6))(tag budget)))
+			(assert (work_goal (goal ?place)(cf (* ?cf-grab 0.4))(tag budget)))
 			else
 				(if (eq ?howmuch 2) then
-				(assert (work_goal (goal ?place)(cf (* ?cf-grab 0.5))(tag budget)))
+				(assert (work_goal (goal ?place)(cf (* ?cf-grab 0.3))(tag budget)))
 				else
 					(if (eq ?howmuch 1) then
-					(assert (work_goal (goal ?place)(cf (* ?cf-grab 0.4))(tag budget)))
+					(assert (work_goal (goal ?place)(cf (* ?cf-grab 0.2))(tag budget)))
 					)
 				)
 			)
 		)
 		(case 2 then	; I don't care about places that are more expensive, anyway they will be eliminated by the next rule
 			(if (eq ?howmuch 2) then
-			(assert (work_goal(goal ?place)(cf (* ?cf-grab 0.6))(tag budget)))
+			(assert (work_goal(goal ?place)(cf (* ?cf-grab 0.4))(tag budget)))
 			else
 				(if (eq ?howmuch 1) then
-				(assert (work_goal(goal ?place)(cf (* ?cf-grab 0.5))(tag budget)))
+				(assert (work_goal(goal ?place)(cf (* ?cf-grab 0.3))(tag budget)))
 				)
 			)
 		)
 		(case 1 then	; I don't care about places that are more expensive, anyway they will be eliminated by the next rule
 			(if (eq ?howmuch 1) then
-			(assert (work_goal(goal ?place)(cf (* ?cf-grab 0.6))(tag budget)))	
+			(assert (work_goal(goal ?place)(cf (* ?cf-grab 0.4))(tag budget)))	
 			)
+		)
+		(case 0 then ;User dont care about the budget, places are important
+			(assert (work_goal(goal ?place)(cf (* ?cf-grab 0.4))(tag 1 2 3)))	
 		)
 	)	
 )
@@ -254,7 +254,8 @@
 (defrule budget-impossible
 	(budget ?amount)
 	(cur_fact (fact ?place) (cf ?cf-grab) (budget ?howmuch))
-	(test(< ?amount ?howmuch))
+	(and (!= ?amount 0) (test(< ?amount ?howmuch)))
+	;(test(< ?amount ?howmuch))
 	?f1 <- (cur_goal (goal ?place))
 =>	(retract ?f1)
 	(printout t ?place " is retracted due to budget constraints" crlf)	
